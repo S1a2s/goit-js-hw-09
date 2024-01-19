@@ -67,47 +67,28 @@ const images = [
   },
 ];
 
-const arrayOfImages = images
-  .map(
-    item => `<li class="gallery-item">
-    <a
-      class="gallery-link"
-      href="${item.original}">
+
+const createGalleryItem = ({ preview, original, description }) => `
+  <li class="gallery-item">
+    <a class="gallery-link" href="${original}">
       <img
         class="gallery-image"
-        src="${item.preview}"
-        alt="${item.description}"
+        src="${preview}"
+        alt="${description}"
         width="200"
         height="360"
       />
     </a>
-  </li>`
-  )
-  .join('\n\n');
+  </li>
+`;
+
+const galleryItems = images.map(createGalleryItem).join('\n\n');
 
 const gallery = document.querySelector('.gallery');
-gallery.insertAdjacentHTML('afterbegin', arrayOfImages);
-document
-  .querySelector('.gallery')
-  .addEventListener('click', e => e.preventDefault());
+gallery.insertAdjacentHTML('afterbegin', galleryItems);
 
 const lightboxForGallery = new SimpleLightbox('.gallery-link', {
   captionsData: 'alt',
   captionDelay: 250,
   alertError: false,
-});
-
-lightboxForGallery.on('shown.simplelightbox', () => {
-  const overlay = document.querySelector('.sl-wrapper');
-  const counter = document.querySelector('.sl-counter');
-  const buttonClose = document.querySelector('.sl-close');
-  const arrowNavigation = document.querySelectorAll(
-    '.sl-wrapper .sl-navigation button'
-  );
-  overlay.style.backgroundColor = 'rgba(46, 47, 66, 0.8)';
-  counter.style.color = '#fff';
-  counter.style.fontFamily = 'Montserrat';
-  counter.style.top = '16px';
-  buttonClose.style.color = '#fff';
-  arrowNavigation.forEach(item => (item.style.color = '#fff'));
 });

@@ -1,30 +1,40 @@
-const form = document.querySelector('.feedback-form');
-const email = form.elements.email;
-const message = form.elements.message;
-const localStorageKey = 'feedback-form-state';
-try {
-  email.value = JSON.parse(localStorage.getItem(localStorageKey)).email ?? '';
-  message.value =
-    JSON.parse(localStorage.getItem(localStorageKey)).message ?? '';
-} catch (error) {}
 
-form.addEventListener('input', () =>
+const form = document.querySelector('.feedback-form');
+const { elements } = form;
+const localStorageKey = 'feedback-form-state';
+
+const updateLocalStorage = () => {
   localStorage.setItem(
     localStorageKey,
     JSON.stringify({
-      email: email.value,
-      message: message.value,
+      email: elements.email.value,
+      message: elements.message.value,
     })
-  )
-);
-form.addEventListener('submit', e => {
+  );
+};
+
+const loadFromLocalStorage = () => {
+  try {
+    const savedState = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+    elements.email.value = savedState.email || '';
+    elements.message.value = savedState.message || '';
+  } catch (error) {}
+};
+
+const handleInput = () => updateLocalStorage();
+
+const handleSubmit = (e) => {
   e.preventDefault();
+  const { email, message } = elements;
+
   if (email.value !== '' && message.value !== '') {
-    console.log({
-      email: email.value,
-      message: message.value,
-    });
+    console.log({ email: email.value, message: message.value });
     localStorage.removeItem(localStorageKey);
     form.reset();
   }
-});
+};
+
+form.addEventListener('input', handleInput);
+form.addEventListener('submit', handleSubmit);
+
+loadFromLocalStorage();
